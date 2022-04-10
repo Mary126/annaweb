@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="bg-light">
+    <div class="navbar navbar-dark bg-dark shadow-sm">
+        <div class="container">
+            <h1 class="float-md-start mb-0 text-center text-white">{{ header_title }}</h1>
+            <nav class="nav nav-masthead justify-content-center float-md-end">
+                <a class="nav-link nav-item {% if header_active == 'home' %}active{% endif %}" href="{% url 'home' %}">Home</a>
+                <a class="nav-link {% if header_active == 'galleries' %}active{% endif %}" href="{% url 'galleries' %}">Galleries</a>
+                <a class="nav-link {% if header_active == 'about' %}active{% endif %}" href="#">Contact</a>
+            </nav>
+        </div>
+    </div>
+    <main class="bg-light mt-2 mx-auto" style="whidth:80%">
+        {% block content %} {% endblock %}
+    </main>
+
+</body>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</html>
