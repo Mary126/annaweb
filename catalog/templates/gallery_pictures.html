@@ -1,11 +1,11 @@
 {% extends "base_generic.html" %}
 {% block script %}
 <script type="text/javascript">
-    document.addEventListener("click",function (event){
-          if(event.target.classList.contains("gallery-item")){
-             var txt = event.target.getAttribute("data-pk")
+    $("document").ready(function() {
+        $(".gallery-item").click(function(event) {
+            var txt = event.target.getAttribute("data-pk")
               $.ajax({
-                    url: '/gallery/getpicture/'+txt,
+                    url: '/gallery/get_picture/'+txt,
                     type: 'get',
                     success: function(data) {
                           document.querySelector(".modal-img").src = data.url;
@@ -17,16 +17,14 @@
                           myModal.show();
                     },
               });
-
-          }
-    })
+        });
+    });
 </script>
 {% endblock %}
 {% block content %}
-<section class="py-5 text-center container">
+<section class="py-2 text-center container">
     <div class="row py-lg-5">
-        <div class="col-lg-6 col-md-8 mx-auto">
-            <h1 class="fw-light">{{gallery.name}}</h1>
+        <div class="col-lg-11 col-md-8 mx-auto">
             <p class="lead text-muted">{{gallery.description}}</p>
         </div>
     </div>
@@ -35,6 +33,9 @@
     {% for picture in gallery.pictures.all %}
     <div data-toggle="modal" data-target="#picture-{{picture.pk}}" class="card my-3">
         <img class="gallery-item card-img-top rounded" style="cursor: pointer;" data-pk="{{ picture.pk }}" alt="{{ picture.title }}" src="{{ picture.image.url }}"/>
+        {% if user.is_authenticated %}
+        <a href="/gallery/{{gallery.name}}/delete-picture/{{picture.pk}}">Delete</a>
+        {% endif %}
     </div>
     {% endfor %}
 </div>

@@ -1,11 +1,12 @@
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import logout
 from django.contrib.auth.views import LoginView
-from django.http import JsonResponse, HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
 from django.views.generic import ListView
 from .models import Picture, Gallery
-from .forms import PictureForm
+from .forms import PictureForm, GalleryForm
 
 
 class IndexView(ListView):
@@ -24,9 +25,14 @@ class IndexView(ListView):
 
 
 class GalleriesView(ListView):
-    queryset = Gallery.objects.all()
     context_object_name = 'galleries_list'
     template_name = 'galleries.html'
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            return Gallery.objects.all()
+        else:
+            return Gallery.objects.exclude(name='HomePage')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -40,7 +46,7 @@ def gallery_view(request, name):
     return render(
         request,
         'gallery_pictures.html',
-        context={'gallery':gallery, 'header_title': 'Gallery',},
+        context={'gallery':gallery, 'header_title': gallery.name},
     )
 
 
@@ -52,6 +58,7 @@ def picture_view(request, num):
                              'upload-date': picture.upload_date, 'view_count':picture.view_count})
 
 
+@login_required
 def add_picture(request, name):
     if request.method == 'POST':
         form = PictureForm(request.POST, request.FILES)
@@ -67,5 +74,37 @@ def add_picture(request, name):
     return render(request, 'add_picture.html', {'form': form, 'url': '/galleries/' + name + '/add-picture'})
 
 
+@login_required
+def add_gallery(request):
+    if request.method == 'POST':
+        form = GalleryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/galleries/')
+    else:
+        form = GalleryForm()
+
+    return render(request, 'add_gallery.html', {'form': form})
+
+
+@login_required
+def delete_picture(request, name, pk):
+    get_object_or_404(Picture, pk=pk).delete()
+    return HttpResponseRedirect('/galleries/' + name)
+
+
+@login_required
+def delete_gallery(request, name):
+    get_object_or_404(Gallery, name=name).delete()
+    return HttpResponse(200)
+
+@login_required
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect('/')
+
+
 class LoginUser(LoginView):
     template_name = 'login.html'
+
+
