@@ -7,4 +7,4 @@ admin.site.register(Gallery)
 @admin.register(Picture)
 class PictureAdmin(admin.ModelAdmin):
     list_display = ('title', 'description',
-                    'view_count', 'creation_date')
+                    'view_count', 'upload_date')

@@ -1,0 +1,12 @@
+{% extends "base_generic.html" %}
+{% block content %}
+<form action="{{ url }}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% for field in form %}
+        <div class="form-group">
+            {{ field }}
+        </div>
+    {% endfor %}
+    <input type="submit" id="btn" value="Отправить" />
+</form>
+{% endblock %}
