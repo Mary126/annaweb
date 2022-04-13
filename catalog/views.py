@@ -9,19 +9,15 @@ from .models import Picture, Gallery
 from .forms import PictureForm, GalleryForm
 
 
-class IndexView(ListView):
-    context_object_name = 'gallery'
-    template_name = 'index.html'
-
-    def get_queryset(self):
-        self.gallery = get_object_or_404(Gallery, name='HomePage')
-        return Picture.objects.filter(gallery=self.gallery)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['header_active'] = 'home'
-        context['header_title'] = 'Home'
-        return context
+def index_view(request):
+    recent_pictures = Picture.objects.all().order_by('-upload_date')[:2]
+    # popular_pictures = Picture.objects.all().order_by('-view_count')[:3]
+    return render(
+        request,
+        'index.html',
+        context={'recent_pictures': recent_pictures, 'page_title': 'Welcome',
+                 'title_cover_image_url': '/static/images/home-page.jpg', 'page_description': 'Something home page'},
+    )
 
 
 class GalleriesView(ListView):
@@ -37,8 +33,17 @@ class GalleriesView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['header_active'] = 'galleries'
-        context['header_title'] = 'Galleries'
+        context['page_title'] = 'Galleries'
+        context['page_description'] = 'Something galleries'
         return context
+
+
+def about_view(request):
+    return render(
+        request,
+        'about.html',
+        context={'page_title': 'About me', 'page_description': 'This is who I am.'}
+    )
 
 
 def gallery_view(request, name):
@@ -46,16 +51,17 @@ def gallery_view(request, name):
     return render(
         request,
         'gallery_pictures.html',
-        context={'gallery':gallery, 'header_title': gallery.name},
+        context={'gallery': gallery, 'page_title': gallery.name, 'page_description': gallery.description},
     )
 
 
 def picture_view(request, num):
     if request.method == "GET":
-        Picture.objects.filter(pk=num).update(view_count=get_object_or_404(Picture, pk=num).view_count + 1)
+        view_count = get_object_or_404(Picture, pk=num).view_count + 1
+        Picture.objects.filter(pk=num).update(view_count=view_count)
         picture = get_object_or_404(Picture, pk=num)
         return JsonResponse({'title':picture.title, 'description': picture.description, 'url': picture.image.url,
-                             'upload-date': picture.upload_date, 'view_count':picture.view_count})
+                             'upload_date': picture.upload_date, 'view_count': picture.view_count})
 
 
 @login_required

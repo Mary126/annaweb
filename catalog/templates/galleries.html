@@ -25,13 +25,13 @@
                 <div class="col-md-4 my-2">
                     <a href="/galleries/{{ gallery.name }}">
                         <img src="{{ gallery.pictures.all.0.image.url }}" class="zoom" style="width=100%" alt="">
-                        <div class="bg-dark">
+                        <div class="bg-dark p-2">
                             <h5 class="text-white"> {{gallery.name}} </h5>
-                            {% if user.is_authenticated %}
-                                <button class="delete-gallery" data-gallery="{{gallery.name}}">Delete</button>
-                            {% endif %}
                         </div>
                     </a>
+                    {% if user.is_authenticated %}
+                                <button class="delete-gallery" data-gallery="{{gallery.name}}">Delete</button>
+                    {% endif %}
                 </div>
             {% endfor %}
         </div>

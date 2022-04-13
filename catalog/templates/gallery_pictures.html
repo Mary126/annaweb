@@ -22,25 +22,20 @@
 </script>
 {% endblock %}
 {% block content %}
-<section class="py-2 text-center container">
-    <div class="row py-lg-5">
-        <div class="col-lg-11 col-md-8 mx-auto">
-            <p class="lead text-muted">{{gallery.description}}</p>
+<div class="container">
+    <div class="row">
+        {% for picture in gallery.pictures.all %}
+        <div data-toggle="modal" data-target="#picture-{{picture.pk}}" class="col-sm-6 col-md-4 mb-3">
+            <img class="gallery-item card-img-top rounded" style="cursor: pointer;" data-pk="{{ picture.pk }}" alt="{{ picture.title }}" src="{{ picture.image.url }}"/>
+            {% if user.is_authenticated %}
+            <a href="/gallery/{{gallery.name}}/delete-picture/{{picture.pk}}">Delete</a>
+            {% endif %}
         </div>
+        {% endfor %}
     </div>
-</section>
-<div class="mx-auto grid" style="width: 80%;">
-    {% for picture in gallery.pictures.all %}
-    <div data-toggle="modal" data-target="#picture-{{picture.pk}}" class="card my-3">
-        <img class="gallery-item card-img-top rounded" style="cursor: pointer;" data-pk="{{ picture.pk }}" alt="{{ picture.title }}" src="{{ picture.image.url }}"/>
-        {% if user.is_authenticated %}
-        <a href="/gallery/{{gallery.name}}/delete-picture/{{picture.pk}}">Delete</a>
-        {% endif %}
-    </div>
-    {% endfor %}
 </div>
 <div class="modal fade" id="gallery-popup" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: none;">
-        <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width:60%">
+        <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width:100%">
             <div class="modal-content">
                   <div class="modal-header">
                       <h5 class="modal-title" id="modal-title"></h5>

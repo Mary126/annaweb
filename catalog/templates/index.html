@@ -1,12 +1,27 @@
 {% extends "base_generic.html" %}
 {% block content %}
-<div id="introCarousel" class="carousel slide carousel-fade" data-ride="carousel">
-    <div class="carousel-inner">
-          {% for picture in gallery %}
-            <div class="carousel-item {% if forloop.counter0 == 0 %}active{% endif %}" style="background-image: url('{{ picture.image.url}}');">
+<div class="container px-4 px-lg-5">
+  <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+            <h1>Recent posts: </h1>
+            {% for picture in recent_pictures %}
+            <!-- Post preview-->
+            <div class="post-preview">
+                <h3 class="post-title">{{picture.title}}</h2>
+                <img class="img-fluid" src="{{picture.image.url}}" alt="...">
+                <p class="post-meta">
+                    Posted by
+                    <a href="#!">Anna</a>
+                    on {{picture.upload_date}}
+                    <a href="/galleries/{{picture.gallery.name}}">in {{picture.gallery.name}}</a>
+                </p>
             </div>
+            <!-- Divider-->
+            <hr class="my-4" />
           {% endfor %}
-    </div>
-
+          <!-- Pager-->
+          <!-- <div class="d-flex justify-content-end mb-4"><a class="btn btn-primary text-uppercase" href="#!">Older Posts →</a></div> -->
+      </div>
+  </div>
 </div>
-{%endblock%}
+{% endblock %}
