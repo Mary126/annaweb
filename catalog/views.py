@@ -51,7 +51,7 @@ def gallery_view(request, name):
     return render(
         request,
         'gallery_pictures.html',
-        context={'gallery': gallery, 'page_title': gallery.name, 'page_description': gallery.description},
+        context={'gallery': gallery, 'page_title': gallery.name, 'page_description': gallery.description, 'title_cover_image_url': gallery.pictures.all()[0].image.url,},
     )
 
 
